@@ -1,4 +1,4 @@
-package app.netlob.flutter_playout.audio;
+package tv.mta.flutter_playout.audio;
 
 import android.app.Service;
 import android.content.Intent;

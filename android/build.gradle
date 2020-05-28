@@ -1,4 +1,4 @@
-group 'app.netlob.flutter_playout'
+group 'tv.mta.flutter_playout'
 version '1.0.3'
 
 buildscript {

@@ -1,4 +1,4 @@
-package app.netlob.flutter_playout.video;
+package tv.mta.flutter_playout.video;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,7 +22,7 @@ public class PlayerViewFactory extends PlatformViewFactory {
 
         final PlayerViewFactory plugin = new PlayerViewFactory(registrar.messenger(), registrar.activity());
 
-        registrar.platformViewRegistry().registerViewFactory("app.netlob/NativeVideoPlayer", plugin);
+        registrar.platformViewRegistry().registerViewFactory("tv.mta/NativeVideoPlayer", plugin);
 
         registrar.addViewDestroyListener(new PluginRegistry.ViewDestroyListener() {
             @Override

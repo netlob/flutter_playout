@@ -1,4 +1,4 @@
-package app.netlob.flutter_playout_example
+package tv.mta.flutter_playout_example
 
 import android.os.Bundle
 

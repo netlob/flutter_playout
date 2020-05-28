@@ -1,4 +1,4 @@
-package app.netlob.flutter_playout;
+package tv.mta.flutter_playout;
 
 public interface FlutterAVPlayer {
     void onDestroy();

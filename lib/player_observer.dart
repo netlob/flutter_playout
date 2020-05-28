@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 mixin PlayerObserver {
   Future<void> listenForVideoPlayerEvents(int viewId) async {
     EventChannel eventChannel = EventChannel(
-        "app.netlob/NativeVideoPlayerEventChannel_$viewId", JSONMethodCodec());
+        "tv.mta/NativeVideoPlayerEventChannel_$viewId", JSONMethodCodec());
     eventChannel.receiveBroadcastStream().listen(_processEvent);
   }
 

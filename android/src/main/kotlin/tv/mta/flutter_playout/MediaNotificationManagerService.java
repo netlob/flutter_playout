@@ -1,4 +1,4 @@
-package app.netlob.flutter_playout;
+package tv.mta.flutter_playout;
 
 import android.app.Service;
 import android.content.Intent;
@@ -8,8 +8,8 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 
 /**
- * This service is used to clear player notifications if app is killed from
- * recent apps list
+ * This service is used to clear player notifications if app is
+ * killed from recent apps list
  */
 public class MediaNotificationManagerService extends Service {
 
@@ -41,8 +41,7 @@ public class MediaNotificationManagerService extends Service {
 
             avPlayer.onDestroy();
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
     }
 
     @Override
@@ -54,8 +53,7 @@ public class MediaNotificationManagerService extends Service {
 
             stopSelf();
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
 
         return false;
     }
@@ -71,7 +69,6 @@ public class MediaNotificationManagerService extends Service {
 
     /**
      * Used to set a player to control the MediaSession for.
-     * 
      * @param player the player that should be controlled by this service.
      */
     public void setActivePlayer(FlutterAVPlayer player) {
@@ -85,9 +82,9 @@ public class MediaNotificationManagerService extends Service {
     }
 
     /**
-     * Clients access this service through this class. Because we know this service
-     * always runs in the same process as its clients, we don't need to deal with
-     * IPC.
+     * Clients access this service through this class.
+     * Because we know this service always runs in the same process
+     * as its clients, we don't need to deal with IPC.
      */
     public class MediaNotificationManagerServiceBinder extends Binder {
 

@@ -74,7 +74,7 @@ class _VideoState extends State<Video> {
       /* Android */
       if (Platform.isAndroid) {
         _playerWidget = AndroidView(
-          viewType: 'app.netlob/NativeVideoPlayer',
+          viewType: 'tv.mta/NativeVideoPlayer',
           creationParams: {
             "autoPlay": widget.autoPlay,
             "showControls": widget.showControls,
@@ -103,7 +103,7 @@ class _VideoState extends State<Video> {
       /* iOS */
       else if (Platform.isIOS) {
         _playerWidget = UiKitView(
-          viewType: 'app.netlob/NativeVideoPlayer',
+          viewType: 'tv.mta/NativeVideoPlayer',
           creationParams: {
             "autoPlay": widget.autoPlay,
             "showControls": widget.showControls,
@@ -165,7 +165,7 @@ class _VideoState extends State<Video> {
   void _onPlatformViewCreated(int viewId) {
     _platformViewId = viewId;
     _methodChannel =
-        MethodChannel("app.netlob/NativeVideoPlayerMethodChannel_$viewId");
+        MethodChannel("tv.mta/NativeVideoPlayerMethodChannel_$viewId");
   }
 
   /// The [desiredState] flag has changed so need to update playback to

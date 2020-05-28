@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 /// See [play] method as well as example app on how to use.
 class Audio {
   static const MethodChannel _audioChannel =
-      MethodChannel('app.netlob/NativeAudioChannel');
+      MethodChannel('tv.mta/NativeAudioChannel');
 
   Audio._();
 

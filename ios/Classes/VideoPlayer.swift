@@ -26,7 +26,7 @@ class VideoPlayerFactory: NSObject, FlutterPlatformViewFactory {
         
         plugin.registrar = registrar
             
-        registrar.register(plugin, withId: "app.netlob/NativeVideoPlayer")
+        registrar.register(plugin, withId: "tv.mta/NativeVideoPlayer")
     }
     
     init(messenger:FlutterBinaryMessenger) {
@@ -88,7 +88,7 @@ class VideoPlayer: NSObject, FlutterPlugin, FlutterStreamHandler, FlutterPlatfor
     private var nowPlayingInfo = [String : Any]()
     
     deinit {
-        print("[dealloc] app.netlob/NativeVideoPlayer")
+        print("[dealloc] tv.mta/NativeVideoPlayer")
     }
     
     init(frame:CGRect, viewId: Int64, messenger: FlutterBinaryMessenger, args: Any?) {
@@ -126,7 +126,7 @@ class VideoPlayer: NSObject, FlutterPlugin, FlutterStreamHandler, FlutterPlatfor
     private func setupEventChannel(viewId: Int64, messenger:FlutterBinaryMessenger, instance:VideoPlayer) {
         
         /* register for Flutter event channel */
-        instance.eventChannel = FlutterEventChannel(name: "app.netlob/NativeVideoPlayerEventChannel_" + String(viewId), binaryMessenger: messenger, codec: FlutterJSONMethodCodec.sharedInstance())
+        instance.eventChannel = FlutterEventChannel(name: "tv.mta/NativeVideoPlayerEventChannel_" + String(viewId), binaryMessenger: messenger, codec: FlutterJSONMethodCodec.sharedInstance())
         
         instance.eventChannel!.setStreamHandler(instance)
     }
@@ -134,7 +134,7 @@ class VideoPlayer: NSObject, FlutterPlugin, FlutterStreamHandler, FlutterPlatfor
     /* set Flutter method channel */
     private func setupMethodChannel(viewId: Int64, messenger:FlutterBinaryMessenger) {
         
-        let nativeMethodsChannel = FlutterMethodChannel(name: "app.netlob/NativeVideoPlayerMethodChannel_" + String(viewId), binaryMessenger: messenger);
+        let nativeMethodsChannel = FlutterMethodChannel(name: "tv.mta/NativeVideoPlayerMethodChannel_" + String(viewId), binaryMessenger: messenger);
         
         nativeMethodsChannel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in

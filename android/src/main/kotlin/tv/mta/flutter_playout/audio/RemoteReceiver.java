@@ -1,4 +1,4 @@
-package app.netlob.flutter_playout.video;
+package tv.mta.flutter_playout.audio;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,20 +21,19 @@ public class RemoteReceiver extends BroadcastReceiver {
 
                         case KeyEvent.KEYCODE_MEDIA_PAUSE:
 
-                            PlayerLayout.activePlayer.setPlayWhenReady(false);
+                            AudioServiceBinder.service.pauseAudio();
 
                             break;
 
                         case KeyEvent.KEYCODE_MEDIA_PLAY:
 
-                            PlayerLayout.activePlayer.setPlayWhenReady(true);
+                            AudioServiceBinder.service.startAudio(0);
 
                             break;
                     }
                 }
             }
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
     }
 }

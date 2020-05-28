@@ -1,4 +1,4 @@
-package app.netlob.flutter_playout.audio;
+package tv.mta.flutter_playout.audio;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -22,7 +22,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.FlutterNativeView;
-import app.netlob.flutter_playout.MediaNotificationManagerService;
+import tv.mta.flutter_playout.MediaNotificationManagerService;
 
 public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
 
@@ -63,7 +63,8 @@ public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChanne
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
 
-            mMediaNotificationManagerService = ((MediaNotificationManagerService.MediaNotificationManagerServiceBinder) service)
+            mMediaNotificationManagerService =
+                    ((MediaNotificationManagerService.MediaNotificationManagerServiceBinder) service)
                     .getService();
 
             mMediaNotificationManagerService.setActivePlayer(audioServiceBinder);
@@ -75,10 +76,7 @@ public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChanne
             mMediaNotificationManagerService = null;
         }
     };
-    /*
-     * This service connection object is the bridge between activity and background
-     * service.
-     */
+    /* This service connection object is the bridge between activity and background service. */
     private ServiceConnection serviceConnection = new ServiceConnection() {
 
         @Override
@@ -116,9 +114,10 @@ public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChanne
 
         this.audioProgressUpdateHandler = new IncomingMessageHandler(this);
 
-        new MethodChannel(messenger, "app.netlob/NativeAudioChannel").setMethodCallHandler(this);
+        new MethodChannel(messenger, "tv.mta/NativeAudioChannel")
+                .setMethodCallHandler(this);
 
-        new EventChannel(messenger, "app.netlob/NativeAudioEventChannel", JSONMethodCodec.INSTANCE)
+        new EventChannel(messenger, "tv.mta/NativeAudioEventChannel", JSONMethodCodec.INSTANCE)
                 .setStreamHandler(this);
     }
 
@@ -149,9 +148,11 @@ public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChanne
 
     private void doBindMediaNotificationManagerService() {
 
-        Intent service = new Intent(this.context, MediaNotificationManagerService.class);
+        Intent service = new Intent(this.context,
+                MediaNotificationManagerService.class);
 
-        this.context.bindService(service, mMediaNotificationManagerServiceConnection, Context.BIND_AUTO_CREATE);
+        this.context.bindService(service, mMediaNotificationManagerServiceConnection,
+                Context.BIND_AUTO_CREATE);
 
         mIsBoundMediaNotificationManagerService = true;
 
@@ -191,8 +192,7 @@ public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChanne
 
             this.startPositionInMills = (int) args.get("position");
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
 
         if (audioServiceBinder != null) {
 
@@ -202,8 +202,7 @@ public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChanne
 
                     audioServiceBinder.reset();
 
-                } catch (Exception e) {
-                    /* ignore */}
+                } catch (Exception e) { /* ignore */}
 
                 audioServiceBinder.setMediaChanging(true);
             }
@@ -335,8 +334,9 @@ public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChanne
 
         try {
 
-            if (audioServiceBinder != null && audioServiceBinder.getAudioPlayer() != null
-                    && !audioServiceBinder.isMediaChanging()) {
+            if (audioServiceBinder != null &&
+                    audioServiceBinder.getAudioPlayer() != null &&
+                    !audioServiceBinder.isMediaChanging()) {
 
                 int newDuration = audioServiceBinder.getAudioPlayer().getDuration();
 
@@ -432,8 +432,7 @@ public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChanne
             /* reset media duration */
             mediaDuration = 0;
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
     }
 
     /* handles messages coming back from AudioServiceBinder */
@@ -452,10 +451,7 @@ public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChanne
 
             if (service != null && service.audioServiceBinder != null) {
 
-                /*
-                 * The update process message is sent from AudioServiceBinder class's thread
-                 * object
-                 */
+                /* The update process message is sent from AudioServiceBinder class's thread object */
                 if (msg.what == service.audioServiceBinder.UPDATE_AUDIO_PROGRESS_BAR) {
 
                     try {
@@ -470,13 +466,13 @@ public class AudioPlayer implements MethodChannel.MethodCallHandler, EventChanne
 
                             message.put("name", "onTime");
 
-                            message.put("time", service.audioServiceBinder.getCurrentAudioPosition() / 1000);
+                            message.put("time",
+                                    service.audioServiceBinder.getCurrentAudioPosition() / 1000);
 
                             service.eventSink.success(message);
                         }
 
-                    } catch (Exception e) {
-                        /* ignore */ }
+                    } catch (Exception e) { /* ignore */ }
 
                 } else if (msg.what == service.audioServiceBinder.UPDATE_PLAYER_STATE_TO_PAUSE) {
 

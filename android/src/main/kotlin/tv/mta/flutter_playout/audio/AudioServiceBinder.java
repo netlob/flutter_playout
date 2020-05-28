@@ -1,4 +1,4 @@
-package app.netlob.flutter_playout.audio;
+package tv.mta.flutter_playout.audio;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -23,12 +23,14 @@ import androidx.core.app.NotificationCompat;
 
 import java.io.IOException;
 
-import app.netlob.flutter_playout.FlutterAVPlayer;
-import app.netlob.flutter_playout.PlayerNotificationUtil;
-import app.netlob.flutter_playout.PlayerState;
-import app.netlob.flutter_playout.R;
+import tv.mta.flutter_playout.FlutterAVPlayer;
+import tv.mta.flutter_playout.PlayerNotificationUtil;
+import tv.mta.flutter_playout.PlayerState;
+import tv.mta.flutter_playout.R;
 
-public class AudioServiceBinder extends Binder implements FlutterAVPlayer, MediaPlayer.OnPreparedListener,
+public class AudioServiceBinder
+        extends Binder
+        implements FlutterAVPlayer, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
     private static final String TAG = "AudioServiceBinder";
@@ -46,8 +48,7 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
      */
     private static final int NOTIFICATION_ID = 0;
     static AudioServiceBinder service;
-    // This is the message signal that inform audio progress updater to update audio
-    // progress.
+    // This is the message signal that inform audio progress updater to update audio progress.
     final int UPDATE_AUDIO_PROGRESS_BAR = 1;
     final int UPDATE_PLAYER_STATE_TO_PAUSE = 2;
     final int UPDATE_PLAYER_STATE_TO_PLAY = 3;
@@ -134,7 +135,8 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
     private void setAudioMetadata() {
         MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
-                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, subtitle).build();
+                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, subtitle)
+                .build();
 
         mMediaSessionCompat.setMetadata(metadata);
     }
@@ -208,8 +210,8 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
     }
 
     void cleanPlayerNotification() {
-        NotificationManager notificationManager = (NotificationManager) getContext()
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager)
+                getContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (notificationManager != null) {
 
@@ -272,8 +274,7 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
                 audioPlayer = null;
             }
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
     }
 
     int getCurrentAudioPosition() {
@@ -302,13 +303,15 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
 
         mp.start();
 
-        ComponentName receiver = new ComponentName(context.getPackageName(), RemoteReceiver.class.getName());
+        ComponentName receiver = new ComponentName(context.getPackageName(),
+                RemoteReceiver.class.getName());
 
         /* Create a new MediaSession */
-        mMediaSessionCompat = new MediaSessionCompat(context, AudioServiceBinder.class.getSimpleName(), receiver, null);
+        mMediaSessionCompat = new MediaSessionCompat(context,
+                AudioServiceBinder.class.getSimpleName(), receiver, null);
 
-        mMediaSessionCompat.setFlags(
-                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS | MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS);
+        mMediaSessionCompat.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+                | MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS);
 
         mMediaSessionCompat.setCallback(new MediaSessionCallback(audioPlayer));
 
@@ -318,10 +321,7 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
 
         updatePlaybackState(PlayerState.PLAYING);
 
-        /*
-         * This thread object will send update audio progress message to caller activity
-         * every 1 second
-         */
+        /* This thread object will send update audio progress message to caller activity every 1 second */
         Thread updateAudioProgressThread = new Thread() {
 
             @Override
@@ -338,16 +338,14 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
 
                             updateAudioProgressMsg.what = UPDATE_AUDIO_PROGRESS_BAR;
 
-                            // Send the message to caller activity's update audio progressbar Handler
-                            // object.
+                            // Send the message to caller activity's update audio progressbar Handler object.
                             audioProgressUpdateHandler.sendMessage(updateAudioProgressMsg);
 
                             try {
 
                                 Thread.sleep(1000);
 
-                            } catch (InterruptedException ex) {
-                                /* ignore */ }
+                            } catch (InterruptedException ex) { /* ignore */ }
 
                         } else {
 
@@ -355,8 +353,7 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
 
                                 Thread.sleep(100);
 
-                            } catch (InterruptedException ex) {
-                                /* ignore */ }
+                            } catch (InterruptedException ex) { /* ignore */ }
                         }
 
                         // Create update audio duration message.
@@ -364,8 +361,7 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
 
                         updateAudioDurationMsg.what = UPDATE_AUDIO_DURATION;
 
-                        // Send the message to caller activity's update audio progressbar Handler
-                        // object.
+                        // Send the message to caller activity's update audio progressbar Handler object.
                         audioProgressUpdateHandler.sendMessage(updateAudioDurationMsg);
 
                     } catch (Exception e) {
@@ -415,27 +411,28 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
                 errorMessage = "MEDIA_ERROR_IO: File or network related operation error";
                 break;
             case MediaPlayer.MEDIA_ERROR_MALFORMED:
-                errorMessage = "MEDIA_ERROR_MALFORMED: Bitstream is not conforming to the related"
-                        + " coding standard or file spec";
+                errorMessage = "MEDIA_ERROR_MALFORMED: Bitstream is not conforming to the related" +
+                        " coding standard or file spec";
                 break;
             case MediaPlayer.MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:
-                errorMessage = "MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:  The video is str"
-                        + "eamed and its container is not valid for progressive playback i.e the vi"
-                        + "deo's index (e.g moov atom) is not at the start of the file";
+                errorMessage = "MEDIA_ERROR_NOT_VALID_FOR_PROGRESSIVE_PLAYBACK:  The video is str" +
+                        "eamed and its container is not valid for progressive playback i.e the vi" +
+                        "deo's index (e.g moov atom) is not at the start of the file";
                 break;
             case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
                 errorMessage = "MEDIA_ERROR_SERVER_DIED: Media server died";
                 break;
             case MediaPlayer.MEDIA_ERROR_TIMED_OUT:
-                errorMessage = "MEDIA_ERROR_TIMED_OUT: Some operation takes too long to complete,"
-                        + " usually more than 3-5 seconds";
+                errorMessage = "MEDIA_ERROR_TIMED_OUT: Some operation takes too long to complete," +
+                        " usually more than 3-5 seconds";
                 break;
             case MediaPlayer.MEDIA_ERROR_UNKNOWN:
                 errorMessage = "MEDIA_ERROR_UNKNOWN: Unspecified media player error";
                 break;
             case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
-                errorMessage = "MEDIA_ERROR_UNSUPPORTED: Bitstream is conforming to the related c"
-                        + "oding standard or file spec, but the media framework does not support th" + "e feature";
+                errorMessage = "MEDIA_ERROR_UNSUPPORTED: Bitstream is conforming to the related c" +
+                        "oding standard or file spec, but the media framework does not support th" +
+                        "e feature";
                 break;
             default:
                 errorMessage = "MEDIA_ERROR_UNKNOWN: Unspecified media player error";
@@ -453,14 +450,14 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
 
         PlaybackStateCompat playbackState = mMediaSessionCompat.getController().getPlaybackState();
 
-        return playbackState == null ? new PlaybackStateCompat.Builder()
+        return playbackState == null
+                ? new PlaybackStateCompat.Builder()
                 : new PlaybackStateCompat.Builder(playbackState);
     }
 
     private void updatePlaybackState(PlayerState playerState) {
 
-        if (mMediaSessionCompat == null)
-            return;
+        if (mMediaSessionCompat == null) return;
 
         PlaybackStateCompat.Builder newPlaybackState = getPlaybackStateBuilder();
 
@@ -490,7 +487,8 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
         }
 
         if (audioPlayer != null) {
-            newPlaybackState.setState(playbackStateCompat, (long) audioPlayer.getCurrentPosition(), PLAYBACK_RATE);
+            newPlaybackState.setState(playbackStateCompat,
+                    (long) audioPlayer.getCurrentPosition(), PLAYBACK_RATE);
         }
 
         mMediaSessionCompat.setPlaybackState(newPlaybackState.build());
@@ -498,18 +496,22 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
         updateNotification(capabilities);
     }
 
-    private @PlaybackStateCompat.Actions long getCapabilities(PlayerState playerState) {
+    private @PlaybackStateCompat.Actions
+    long getCapabilities(PlayerState playerState) {
         long capabilities = 0;
 
         switch (playerState) {
             case PLAYING:
-                capabilities |= PlaybackStateCompat.ACTION_PAUSE | PlaybackStateCompat.ACTION_STOP;
+                capabilities |= PlaybackStateCompat.ACTION_PAUSE
+                        | PlaybackStateCompat.ACTION_STOP;
                 break;
             case PAUSED:
-                capabilities |= PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_STOP;
+                capabilities |= PlaybackStateCompat.ACTION_PLAY
+                        | PlaybackStateCompat.ACTION_STOP;
                 break;
             case BUFFERING:
-                capabilities |= PlaybackStateCompat.ACTION_PAUSE | PlaybackStateCompat.ACTION_STOP;
+                capabilities |= PlaybackStateCompat.ACTION_PAUSE
+                        | PlaybackStateCompat.ACTION_STOP;
                 break;
             case IDLE:
                 if (!mReceivedError) {
@@ -528,8 +530,8 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
             createNotificationChannel();
         }
 
-        NotificationCompat.Builder notificationBuilder = PlayerNotificationUtil.from(activity, context,
-                mMediaSessionCompat, mNotificationChannelId);
+        NotificationCompat.Builder notificationBuilder = PlayerNotificationUtil.from(
+                activity, context, mMediaSessionCompat, mNotificationChannelId);
 
         if ((capabilities & PlaybackStateCompat.ACTION_PAUSE) != 0) {
             notificationBuilder.addAction(R.drawable.ic_pause, "Pause",
@@ -541,8 +543,8 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
                     PlayerNotificationUtil.getActionIntent(context, KeyEvent.KEYCODE_MEDIA_PLAY));
         }
 
-        NotificationManager notificationManager = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (notificationManager != null) {
 
@@ -553,15 +555,15 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
     @RequiresApi(Build.VERSION_CODES.O)
     private void createNotificationChannel() {
 
-        NotificationManager notificationManager = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         CharSequence channelNameDisplayedToUser = "Notification Bar Controls";
 
         int importance = NotificationManager.IMPORTANCE_LOW;
 
-        NotificationChannel newChannel = new NotificationChannel(mNotificationChannelId, channelNameDisplayedToUser,
-                importance);
+        NotificationChannel newChannel = new NotificationChannel(
+                mNotificationChannelId, channelNameDisplayedToUser, importance);
 
         newChannel.setDescription("All notifications");
 
@@ -576,8 +578,7 @@ public class AudioServiceBinder extends Binder implements FlutterAVPlayer, Media
     }
 
     /**
-     * A {@link android.support.v4.media.session.MediaSessionCompat.Callback}
-     * implementation for MediaPlayer.
+     * A {@link android.support.v4.media.session.MediaSessionCompat.Callback} implementation for MediaPlayer.
      */
     private final class MediaSessionCallback extends MediaSessionCompat.Callback {
 

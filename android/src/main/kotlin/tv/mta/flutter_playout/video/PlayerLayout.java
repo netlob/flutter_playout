@@ -1,4 +1,4 @@
-package app.netlob.flutter_playout.video;
+package tv.mta.flutter_playout.video;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -43,11 +43,11 @@ import java.util.HashMap;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.JSONMethodCodec;
-import app.netlob.flutter_playout.FlutterAVPlayer;
-import app.netlob.flutter_playout.MediaNotificationManagerService;
-import app.netlob.flutter_playout.PlayerNotificationUtil;
-import app.netlob.flutter_playout.PlayerState;
-import app.netlob.flutter_playout.R;
+import tv.mta.flutter_playout.FlutterAVPlayer;
+import tv.mta.flutter_playout.MediaNotificationManagerService;
+import tv.mta.flutter_playout.PlayerNotificationUtil;
+import tv.mta.flutter_playout.PlayerState;
+import tv.mta.flutter_playout.R;
 
 public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventChannel.StreamHandler {
     /**
@@ -117,8 +117,7 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
      */
     private MediaNotificationManagerService mMediaNotificationManagerService;
     /**
-     * The {@link ServiceConnection} serves as glue between this activity and the
-     * {@link MediaNotificationManagerService}.
+     * The {@link ServiceConnection} serves as glue between this activity and the {@link MediaNotificationManagerService}.
      */
     private ServiceConnection mMediaNotificationManagerServiceConnection = new ServiceConnection() {
         @Override
@@ -141,8 +140,11 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
         super(context);
     }
 
-    public PlayerLayout(@NonNull Context context, Activity activity, BinaryMessenger messenger, int id,
-            Object arguments) {
+    public PlayerLayout(@NonNull Context context,
+                        Activity activity,
+                        BinaryMessenger messenger,
+                        int id,
+                        Object arguments) {
 
         super(context);
 
@@ -174,8 +176,7 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
 
             initPlayer();
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
 
         instance = this;
 
@@ -203,7 +204,8 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
         trackSelector = new DefaultTrackSelector(context);
 
         trackSelector.setParameters(
-                trackSelector.buildUponParameters().setPreferredAudioLanguage(this.preferredAudioLanguage));
+                trackSelector.buildUponParameters()
+                        .setPreferredAudioLanguage(this.preferredAudioLanguage));
 
         mPlayerView = new SimpleExoPlayer.Builder(context).setTrackSelector(trackSelector).build();
 
@@ -222,8 +224,10 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
 
         this.setPlayer(mPlayerView);
 
-        new EventChannel(messenger, "app.netlob/NativeVideoPlayerEventChannel_" + this.viewId, JSONMethodCodec.INSTANCE)
-                .setStreamHandler(this);
+        new EventChannel(
+                messenger,
+                "tv.mta/NativeVideoPlayerEventChannel_" + this.viewId,
+                JSONMethodCodec.INSTANCE).setStreamHandler(this);
 
         updateMediaSource();
 
@@ -234,13 +238,15 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
 
     private void setupMediaSession() {
 
-        ComponentName receiver = new ComponentName(context.getPackageName(), RemoteReceiver.class.getName());
+        ComponentName receiver = new ComponentName(context.getPackageName(),
+                RemoteReceiver.class.getName());
 
         /* Create a new MediaSession */
-        mMediaSessionCompat = new MediaSessionCompat(context, PlayerLayout.class.getSimpleName(), receiver, null);
+        mMediaSessionCompat = new MediaSessionCompat(context,
+                PlayerLayout.class.getSimpleName(), receiver, null);
 
-        mMediaSessionCompat.setFlags(
-                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS | MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS);
+        mMediaSessionCompat.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+                | MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS);
 
         mMediaSessionCompat.setCallback(new MediaSessionCallback());
 
@@ -256,7 +262,8 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
         MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, subtitle).build();
+                .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_SUBTITLE, subtitle)
+                .build();
 
         mMediaSessionCompat.setMetadata(metadata);
     }
@@ -265,14 +272,14 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
 
         PlaybackStateCompat playbackState = mMediaSessionCompat.getController().getPlaybackState();
 
-        return playbackState == null ? new PlaybackStateCompat.Builder()
+        return playbackState == null
+                ? new PlaybackStateCompat.Builder()
                 : new PlaybackStateCompat.Builder(playbackState);
     }
 
     private void updatePlaybackState(PlayerState playerState) {
 
-        if (mMediaSessionCompat == null)
-            return;
+        if (mMediaSessionCompat == null) return;
 
         PlaybackStateCompat.Builder newPlaybackState = getPlaybackStateBuilder();
 
@@ -303,16 +310,19 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
         updateNotification(capabilities);
     }
 
-    private @PlaybackStateCompat.Actions long getCapabilities(PlayerState playerState) {
+    private @PlaybackStateCompat.Actions
+    long getCapabilities(PlayerState playerState) {
         long capabilities = 0;
 
         switch (playerState) {
             case PLAYING:
             case BUFFERING:
-                capabilities |= PlaybackStateCompat.ACTION_PAUSE | PlaybackStateCompat.ACTION_STOP;
+                capabilities |= PlaybackStateCompat.ACTION_PAUSE
+                        | PlaybackStateCompat.ACTION_STOP;
                 break;
             case PAUSED:
-                capabilities |= PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_STOP;
+                capabilities |= PlaybackStateCompat.ACTION_PLAY
+                        | PlaybackStateCompat.ACTION_STOP;
                 break;
             case IDLE:
                 capabilities |= PlaybackStateCompat.ACTION_PLAY;
@@ -329,8 +339,8 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
             createNotificationChannel();
         }
 
-        NotificationCompat.Builder notificationBuilder = PlayerNotificationUtil.from(activity, context,
-                mMediaSessionCompat, mNotificationChannelId);
+        NotificationCompat.Builder notificationBuilder = PlayerNotificationUtil.from(
+                activity, context, mMediaSessionCompat, mNotificationChannelId);
 
         if ((capabilities & PlaybackStateCompat.ACTION_PAUSE) != 0) {
             notificationBuilder.addAction(R.drawable.ic_pause, "Pause",
@@ -342,8 +352,8 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
                     PlayerNotificationUtil.getActionIntent(context, KeyEvent.KEYCODE_MEDIA_PLAY));
         }
 
-        NotificationManager notificationManager = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (notificationManager != null) {
 
@@ -354,15 +364,15 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
     @RequiresApi(Build.VERSION_CODES.O)
     private void createNotificationChannel() {
 
-        NotificationManager notificationManager = (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         CharSequence channelNameDisplayedToUser = "Notification Bar Controls";
 
         int importance = NotificationManager.IMPORTANCE_LOW;
 
-        NotificationChannel newChannel = new NotificationChannel(mNotificationChannelId, channelNameDisplayedToUser,
-                importance);
+        NotificationChannel newChannel = new NotificationChannel(
+                mNotificationChannelId, channelNameDisplayedToUser, importance);
 
         newChannel.setDescription("All notifications");
 
@@ -377,8 +387,8 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
     }
 
     private void cleanPlayerNotification() {
-        NotificationManager notificationManager = (NotificationManager) getContext()
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager)
+                getContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (notificationManager != null) {
 
@@ -388,7 +398,8 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
 
     private void doBindMediaNotificationManagerService() {
 
-        Intent service = new Intent(this.context, MediaNotificationManagerService.class);
+        Intent service = new Intent(this.context,
+                MediaNotificationManagerService.class);
 
         this.context.bindService(service, mMediaNotificationManagerServiceConnection, Context.BIND_AUTO_CREATE);
 
@@ -470,7 +481,7 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
          * Check for HLS playlist file extension ( .m3u8 or .m3u )
          * https://tools.ietf.org/html/rfc8216
          */
-        if (this.url.contains(".m3u8") || this.url.contains(".m3u")) {
+        if(this.url.contains(".m3u8") || this.url.contains(".m3u")) {
             videoSource = new HlsMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(this.url));
         } else {
             videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(this.url));
@@ -493,8 +504,7 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
 
             updateMediaSource();
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
     }
 
     public void onShowControlsFlagChanged(Object arguments) {
@@ -510,13 +520,12 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
                 setUseController(sc);
             }
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
     }
 
     /**
-     * set audio language for player - language must be one of available in HLS
-     * manifest currently playing
+     * set audio language for player - language must be one of available in HLS manifest
+     * currently playing
      *
      * @param arguments
      */
@@ -531,12 +540,12 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
 
             if (mPlayerView != null && trackSelector != null && mPlayerView.isPlaying()) {
 
-                trackSelector
-                        .setParameters(trackSelector.buildUponParameters().setPreferredAudioLanguage(languageCode));
+                trackSelector.setParameters(
+                        trackSelector.buildUponParameters()
+                                .setPreferredAudioLanguage(languageCode));
             }
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
     }
 
     public void seekTo(Object arguments) {
@@ -556,8 +565,7 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
                 }
             }
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
     }
 
     void onDuration() {
@@ -602,13 +610,11 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
 
             activePlayer = null;
 
-        } catch (Exception e) {
-            /* ignore */ }
+        } catch (Exception e) { /* ignore */ }
     }
 
     /**
-     * A {@link android.support.v4.media.session.MediaSessionCompat.Callback}
-     * implementation for MediaPlayer.
+     * A {@link android.support.v4.media.session.MediaSessionCompat.Callback} implementation for MediaPlayer.
      */
     private final class MediaSessionCallback extends MediaSessionCompat.Callback {
 
@@ -654,8 +660,8 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
 
                 message.put("offset", eventTime.currentPlaybackPositionMs / 1000);
 
-                Log.d(TAG, "onSeek: [position=" + beforeSeek + "] [offset=" + eventTime.currentPlaybackPositionMs / 1000
-                        + "]");
+                Log.d(TAG, "onSeek: [position=" + beforeSeek + "] [offset=" +
+                        eventTime.currentPlaybackPositionMs / 1000 + "]");
                 eventSink.success(message);
 
             } catch (Exception e) {
@@ -674,8 +680,8 @@ public class PlayerLayout extends PlayerView implements FlutterAVPlayer, EventCh
 
             try {
 
-                final String errorMessage = "ExoPlaybackException Type [" + error.type + "] "
-                        + error.getSourceException().getCause().getMessage();
+                final String errorMessage = "ExoPlaybackException Type [" + error.type + "] " +
+                        error.getSourceException().getCause().getMessage();
 
                 JSONObject message = new JSONObject();
 

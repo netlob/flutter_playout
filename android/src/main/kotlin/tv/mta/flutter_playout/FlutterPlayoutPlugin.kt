@@ -1,8 +1,8 @@
-package app.netlob.flutter_playout
+package tv.mta.flutter_playout
 
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import app.netlob.flutter_playout.audio.AudioPlayer
-import app.netlob.flutter_playout.video.PlayerViewFactory
+import tv.mta.flutter_playout.audio.AudioPlayer
+import tv.mta.flutter_playout.video.PlayerViewFactory
 
 class FlutterPlayoutPlugin {
   companion object {

@@ -9,7 +9,7 @@ mixin MultiAudioSupport {
   MethodChannel _methodChannel;
   Future<void> enableMultiAudioSupport(int viewId) async {
     _methodChannel =
-        MethodChannel("app.netlob/NativeVideoPlayerMethodChannel_$viewId");
+        MethodChannel("tv.mta/NativeVideoPlayerMethodChannel_$viewId");
   }
 
   /// Set/Change audio language for currently playing asset. [languageCode]

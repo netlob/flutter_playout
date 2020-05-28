@@ -1,4 +1,4 @@
-package app.netlob.flutter_playout.video;
+package tv.mta.flutter_playout.video;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +17,8 @@ public class PlayerView implements PlatformView, MethodChannel.MethodCallHandler
 
     PlayerView(Context context, Activity activity, int id, BinaryMessenger messenger, Object args) {
 
-        new MethodChannel(messenger, "app.netlob/NativeVideoPlayerMethodChannel_" + id).setMethodCallHandler(this);
+        new MethodChannel(messenger, "tv.mta/NativeVideoPlayerMethodChannel_" + id)
+                .setMethodCallHandler(this);
 
         player = new PlayerLayout(context, activity, messenger, id, args);
     }
